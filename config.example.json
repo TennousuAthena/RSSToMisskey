@@ -1,0 +1,14 @@
+{
+  "misskey.io": {
+    "name": "misskey.io",
+    "url" : "https://misskey.io",
+    "token": "9v1t2poJeEh5RI74VqBCzJLHk9N6Weds",
+    "channel": "8hrcz5rdvp"
+  },
+  "misskey.dev": {
+    "name": "misskey.dev",
+    "url" : "https://misskey.dev",
+    "token": "qnZl1OmgnAlTRbRO",
+    "channel": false
+  }
+}
