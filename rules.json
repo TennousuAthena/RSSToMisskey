@@ -1,0 +1,6 @@
+{
+  "DWNews":{
+    "rss_source": "https://rsshub.app/dwnews/yaowen/global",
+    "identify": "misskey.io"
+  }
+}
