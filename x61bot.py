@@ -37,6 +37,13 @@ def spider(rule_name, rss_url):
     result = xmltodict.parse(fetch.content)
     c.execute('INSERT INTO "main"."spider_log" ("rule_name", "rss_url", "result_json", "timestamp") '
               'VALUES (?, ?, ?, ?)', (rule_name, rss_url, json.dumps(result), time.time()))
+    item_list = result['rss']['channel']['item']
+    for i in item_list:
+        print("Got: ", i['title'])
+        desc = i['description'].replace("<blockquote>", "“").replace("</blockquote>", "”")  
+        c.execute('INSERT INTO "main"."result" ("rule_name", "url", "title", "description", "timestamp")'
+                  ' VALUES (?, ?, ?, ?, ?)', (rule_name, i['link'], i['title'], desc, time.time()))
+
     c.close()
     end = time.time()
     print("Fetch done in", end - start, "s")
@@ -49,14 +56,16 @@ def fetch_detail(url):
 
 if __name__ == '__main__':
     print("Misskey X61 RSS Bot initialized")
-    spider("DuoWei", "https://rsshub.app/dwnews/yaowen/global")
 
     config = json_read("config.json")
     rules = json_read("rules.json")
 
+    for key in rules:
+        spider(key, rules[key]['rss_source'])
+
     Misskey.config = config['misskey.io']
 
-    req = Misskey.post(baseurl="https://misskey.io", content="Beep.. Beep Beep! Beep:" + str(time.time()), self=Misskey)
+    # req = Misskey.post(baseurl="https://misskey.io", content="Beep.. Beep Beep! Beep:" + str(time.time()), self=Misskey)
     conn.commit()
     conn.close()
 

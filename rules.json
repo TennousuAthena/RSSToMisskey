@@ -1,6 +1,10 @@
 {
   "DWNews":{
     "rss_source": "https://rsshub.app/dwnews/yaowen/global",
-    "identify": "misskey.io"
+    "identity": "misskey.io"
+  },
+  "NHK": {
+    "rss_source": "https://rsshub.app/nhk/news_web_easy",
+    "identity": "misskey.io"
   }
 }

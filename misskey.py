@@ -9,15 +9,11 @@ class Misskey:
     config = {}
     debug = True
 
-    def post(self, baseurl, content, channel=""):
+    def post(self, baseurl, content, channel="", visibility="public"):
         print("Creating new post to", baseurl, ":", content)
         req_url = baseurl + "/api/notes/create"
-        if self.debug:
-            visb = "specified"
-        else:
-            visb = "public"
         body = {
-            "visibility": visb,
+            "visibility": visibility,
             "text": content,
             "localOnly": channel != "",
             "i": self.config['token']
