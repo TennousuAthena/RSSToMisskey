@@ -13,5 +13,15 @@
     "rss_source": "https://rsshub.app/solidot/www",
     "identity": "misskey.dev",
     "extra_content": ""
+  },
+  "ZaoBao": {
+    "rss_source": "https://rsshub.app/zaobao/realtime/china",
+    "identity": "ZaobaoBot@x61.uk",
+    "extra_content": "#News"
+  },
+  "NIKKEI": {
+    "rss_source": "https://rsshub.app/nikkei/index",
+    "identity": "NIKKEI@x61.uk",
+    "extra_content": "#News"
   }
 }

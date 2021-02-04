@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import json
+import re
 import sqlite3
 import requests
 import xmltodict
@@ -42,13 +43,15 @@ def spider(rule_name, rss_url):
     item_list = result['rss']['channel']['item']
     for i in item_list:
         unique = c.execute('SELECT * FROM "main"."result" WHERE "title" = ? LIMIT 0,1', (i['title'],)).fetchone()
+        re_cdata = re.compile('//<![CDATA[[^>]*//]]>', re.I)
+        title = re_cdata.sub('', i['title'])
         if not (unique is None):
-            print("Skip: ", i['title'])
+            print("Skip: ", title)
             continue
-        print("Got: ", i['title'])
+        print("Got: ", title)
         desc = i['description'].replace("<blockquote>", "“").replace("</blockquote>", "”")
         c.execute('INSERT INTO "main"."result" ("rule_name", "url", "title", "description", "timestamp")'
-                  ' VALUES (?, ?, ?, ?, ?)', (rule_name, i['link'], i['title'], desc, time.time()))
+                  ' VALUES (?, ?, ?, ?, ?)', (rule_name, i['link'], title, desc, time.time()))
 
     c.close()
     end = time.time()
