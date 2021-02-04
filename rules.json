@@ -1,10 +1,17 @@
 {
   "DWNews":{
     "rss_source": "https://rsshub.app/dwnews/yaowen/global",
-    "identity": "misskey.io"
+    "identity": "WDNews@x61.uk",
+    "extra_content": "#News"
   },
   "NHK": {
     "rss_source": "https://rsshub.app/nhk/news_web_easy",
-    "identity": "misskey.io"
+    "identity": "misskey.io",
+    "extra_content": ""
+  },
+  "SoliDot": {
+    "rss_source": "https://rsshub.app/solidot/www",
+    "identity": "misskey.dev",
+    "extra_content": ""
   }
 }

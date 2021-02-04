@@ -7,6 +7,7 @@ import requests
 import xmltodict
 import time
 from misskey import Misskey
+from bs4 import BeautifulSoup
 
 time_start = time.time()
 print(
@@ -20,6 +21,7 @@ def json_read(file):
     config = json.loads(config_file.read())
     config_file.close()
     return config
+
 
 def xml_to_json(xml):
     pars = xmltodict.parse(xml)
@@ -39,8 +41,12 @@ def spider(rule_name, rss_url):
               'VALUES (?, ?, ?, ?)', (rule_name, rss_url, json.dumps(result), time.time()))
     item_list = result['rss']['channel']['item']
     for i in item_list:
+        unique = c.execute('SELECT * FROM "main"."result" WHERE "title" = ? LIMIT 0,1', (i['title'],)).fetchone()
+        if not (unique is None):
+            print("Skip: ", i['title'])
+            continue
         print("Got: ", i['title'])
-        desc = i['description'].replace("<blockquote>", "“").replace("</blockquote>", "”")  
+        desc = i['description'].replace("<blockquote>", "“").replace("</blockquote>", "”")
         c.execute('INSERT INTO "main"."result" ("rule_name", "url", "title", "description", "timestamp")'
                   ' VALUES (?, ?, ?, ?, ?)', (rule_name, i['link'], i['title'], desc, time.time()))
 
@@ -50,7 +56,7 @@ def spider(rule_name, rss_url):
     return result
 
 
-def fetch_detail(url):
+def fetch_img(url):
     print()
 
 
@@ -62,10 +68,20 @@ if __name__ == '__main__':
 
     for key in rules:
         spider(key, rules[key]['rss_source'])
+        name = rules[key]['identity']
+        Misskey.baseurl = config[name]['url']
 
-    Misskey.config = config['misskey.io']
-
-    # req = Misskey.post(baseurl="https://misskey.io", content="Beep.. Beep Beep! Beep:" + str(time.time()), self=Misskey)
+        c = conn.cursor()
+        r = c.execute('''SELECT * FROM "main"."result" 
+        WHERE "rule_name" = ? AND
+         "post_time" = '0' ORDER BY "rid" DESC''', (key,)).fetchone()
+        if not(r is None):
+            res = c.execute('UPDATE "main"."result" SET "post_time" = ? WHERE rowid = ?', (time.time(), r[0]))
+            if not (res is None):
+                content = r[3]+"\n<"+r[2]+">\n\n"+rules[key]['extra_content']
+                Misskey.post(self=Misskey,
+                             content=content,
+                             i=config[name]['token'], visibility=config[name]['visibility'])
     conn.commit()
     conn.close()
 
