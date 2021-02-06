@@ -82,7 +82,7 @@ if __name__ == '__main__':
             res = c.execute('UPDATE "main"."result" SET "post_time" = ? WHERE rowid = ?', (time.time(), r[0]))
             if not (res is None):
                 reg = re.compile('<[^>]*>')
-                desc = reg.sub('', r[4]).replace('\n\n', '\n').replace(' ', '').replace('\n\n\n', '')
+                desc = reg.sub('', r[4]).replace(' ', '').replace('\n\n\n', '\n')
                 content = "**"+r[3]+"**\n\n"+desc+"\n<"+r[2]+">\n"+rules[key]['extra_content']
                 if Misskey.debug:
                     config[name]['visibility'] = "specified"
