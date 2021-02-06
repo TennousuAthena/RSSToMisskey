@@ -6,7 +6,7 @@
   },
   "NHK": {
     "rss_source": "https://rsshub.app/nhk/news_web_easy",
-    "identity": "misskey.io",
+    "identity": "NHK_Easybot@x61.uk",
     "extra_content": ""
   },
   "SoliDot": {
@@ -22,6 +22,11 @@
   "NIKKEI": {
     "rss_source": "https://rsshub.app/nikkei/index",
     "identity": "NIKKEI@x61.uk",
+    "extra_content": "#News"
+  },
+  "Asahi": {
+    "rss_source": "https://rsshub.app/asahichinese-j/whatsnew",
+    "identity": "AsahiBot@x61.uk",
     "extra_content": "#News"
   }
 }

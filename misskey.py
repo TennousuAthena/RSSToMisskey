@@ -13,6 +13,9 @@ class Misskey:
         print("Creating new post to", self.baseurl, ":", content)
         req_url = self.baseurl + "/api/notes/create"
         body = {
+            "noExtractMentions": True,
+            "noExtractHashtags": True,
+            "noExtractEmojis": True,
             "visibility": visibility,
             "text": content,
             "localOnly": channel != "",

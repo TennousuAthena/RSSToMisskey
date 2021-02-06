@@ -39,7 +39,7 @@ def spider(rule_name, rss_url):
         return False
     result = xmltodict.parse(fetch.content)
     c.execute('INSERT INTO "main"."spider_log" ("rule_name", "rss_url", "result_json", "timestamp") '
-              'VALUES (?, ?, ?, ?)', (rule_name, rss_url, json.dumps(result), time.time()))
+              'VALUES (?, ?, ?, ?)', (rule_name, rss_url, "{}", time.time()))
     item_list = result['rss']['channel']['item']
     for i in item_list:
         unique = c.execute('SELECT * FROM "main"."result" WHERE "title" = ? LIMIT 0,1', (i['title'],)).fetchone()
@@ -49,7 +49,7 @@ def spider(rule_name, rss_url):
             print("Skip: ", title)
             continue
         print("Got: ", title)
-        desc = i['description'].replace("<blockquote>", "“").replace("</blockquote>", "”")
+        desc = i['description'].replace("<blockquote>", "<i>“").replace("</blockquote>", "”</i>")
         c.execute('INSERT INTO "main"."result" ("rule_name", "url", "title", "description", "timestamp")'
                   ' VALUES (?, ?, ?, ?, ?)', (rule_name, i['link'], title, desc, time.time()))
 
@@ -81,7 +81,11 @@ if __name__ == '__main__':
         if not(r is None):
             res = c.execute('UPDATE "main"."result" SET "post_time" = ? WHERE rowid = ?', (time.time(), r[0]))
             if not (res is None):
-                content = r[3]+"\n<"+r[2]+">\n\n"+rules[key]['extra_content']
+                reg = re.compile('<[^>]*>')
+                desc = reg.sub('', r[4]).replace('\n\n', '\n').replace(' ', '').replace('\n\n\n', '')
+                content = "**"+r[3]+"**\n\n"+desc+"\n<"+r[2]+">\n"+rules[key]['extra_content']
+                if Misskey.debug:
+                    config[name]['visibility'] = "specified"
                 Misskey.post(self=Misskey,
                              content=content,
                              i=config[name]['token'], visibility=config[name]['visibility'])
